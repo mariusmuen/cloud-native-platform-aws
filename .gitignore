@@ -1,40 +1,40 @@
 # ---------------------------------------------------------------
 # Terraform
 # ---------------------------------------------------------------
-# Provider-Binaries und Module-Cache (groß, wird bei `terraform init` neu geladen)
+# Provider binaries and module cache (large, re-downloaded by `terraform init`)
 **/.terraform/*
 
-# State-Dateien enthalten Ressourcen-IDs und oft Secrets im Klartext.
-# Der State liegt ausschließlich im S3-Backend, nie im Repo.
+# State files contain resource IDs and often secrets in plain text.
+# State lives exclusively in the S3 backend, never in the repository.
 *.tfstate
 *.tfstate.*
 
-# Crash-Logs
+# Crash logs
 crash.log
 crash.*.log
 
-# Gespeicherte Pläne können sensible Werte enthalten
+# Saved plans may contain sensitive values
 *.tfplan
 tfplan
 
-# Variablen-Dateien MIT Secrets (normale terraform.tfvars ohne Secrets werden committet)
+# Variable files WITH secrets (regular terraform.tfvars without secrets are committed)
 *.secret.tfvars
 *.local.tfvars
 
-# Lokale Overrides
+# Local overrides
 override.tf
 override.tf.json
 *_override.tf
 *_override.tf.json
 
-# CLI-Konfiguration
+# CLI configuration
 .terraformrc
 terraform.rc
 
-# WICHTIG: .terraform.lock.hcl wird bewusst committet (pinnt Provider-Versionen)
+# NOTE: .terraform.lock.hcl is committed on purpose (pins provider versions)
 
 # ---------------------------------------------------------------
-# Zugangsdaten & Secrets – dürfen NIE ins Repo
+# Credentials & secrets – must NEVER be committed
 # ---------------------------------------------------------------
 .env
 .env.*
@@ -64,7 +64,7 @@ venv/
 **/charts/*.tgz
 
 # ---------------------------------------------------------------
-# Editor & Betriebssystem
+# Editor & OS
 # ---------------------------------------------------------------
 .vscode/*
 !.vscode/extensions.json
