@@ -1,0 +1,75 @@
+# ---------------------------------------------------------------
+# Terraform
+# ---------------------------------------------------------------
+# Provider-Binaries und Module-Cache (groß, wird bei `terraform init` neu geladen)
+**/.terraform/*
+
+# State-Dateien enthalten Ressourcen-IDs und oft Secrets im Klartext.
+# Der State liegt ausschließlich im S3-Backend, nie im Repo.
+*.tfstate
+*.tfstate.*
+
+# Crash-Logs
+crash.log
+crash.*.log
+
+# Gespeicherte Pläne können sensible Werte enthalten
+*.tfplan
+tfplan
+
+# Variablen-Dateien MIT Secrets (normale terraform.tfvars ohne Secrets werden committet)
+*.secret.tfvars
+*.local.tfvars
+
+# Lokale Overrides
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# CLI-Konfiguration
+.terraformrc
+terraform.rc
+
+# WICHTIG: .terraform.lock.hcl wird bewusst committet (pinnt Provider-Versionen)
+
+# ---------------------------------------------------------------
+# Zugangsdaten & Secrets – dürfen NIE ins Repo
+# ---------------------------------------------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+id_rsa*
+id_ed25519*
+credentials
+.aws/
+kubeconfig
+*.kubeconfig
+
+# ---------------------------------------------------------------
+# Python (Lambda)
+# ---------------------------------------------------------------
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.zip
+.pytest_cache/
+
+# ---------------------------------------------------------------
+# Helm
+# ---------------------------------------------------------------
+**/charts/*.tgz
+
+# ---------------------------------------------------------------
+# Editor & Betriebssystem
+# ---------------------------------------------------------------
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
