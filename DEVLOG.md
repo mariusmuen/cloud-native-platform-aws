@@ -6,8 +6,8 @@ Pro Session drei Zeilen: **Erledigt · Gelernt · Hakt**. Neueste Einträge oben
 
 ## 2026-10-14 · Woche 0 · AWS absichern + Repo
 
-- **Erledigt:** Root-MFA geprüft; IAM-Gruppe `admins` + Nutzer `marius-admin` mit MFA, keine Access Keys; CLI-Anmeldung per `aws login` (temporäre Credentials), Region `eu-central-1`; AWS Budget mit Warnungen bei 11/27 USD (tatsächlich) und 27 USD (Prognose), Gutschriften ausgeschlossen; GitHub-CLI verbunden, Repo angelegt, Ordnerstruktur und `.gitignore`.
-- **Gelernt:** Free-Plan-Konten verlieren ihr Guthaben, sobald sie AWS Organizations beitreten → kein IAM Identity Center (siehe [ADR 0001](docs/adr/0001-aws-access-iam-user.md)). Budgets müssen Gutschriften ausschließen, sonst warnen sie nie. Rechte über Gruppen statt direkt am Nutzer (wie AGDLP im AD).
+- **Erledigt:** Root-MFA geprüft; IAM-Gruppe `admins` + Nutzer `marius-admin` mit MFA, keine Access Keys; CLI-Anmeldung per `aws login` (temporäre Credentials), Region `eu-central-1`; AWS Budget mit Warnungen bei 11/27 USD (tatsächlich) und 27 USD (Prognose), Gutschriften ausgeschlossen; GitHub-CLI verbunden, Repo angelegt, Ordnerstruktur und `.gitignore`; Branch-Schutz für `main` per Ruleset (kein Löschen, kein Force-Push, Pull Request Pflicht); Online Boutique geforkt. **Woche 0 komplett.**
+- **Gelernt:** Free-Plan-Konten verlieren ihr Guthaben, sobald sie AWS Organizations beitreten → kein IAM Identity Center (siehe [ADR 0001](docs/adr/0001-aws-access-iam-user.md)). Budgets müssen Gutschriften ausschließen, sonst warnen sie nie. Rechte über Gruppen statt direkt am Nutzer (wie AGDLP im AD). Historie auf geteilten Branches nie umschreiben; bei geleakten Secrets zuerst rotieren, nicht nur die Historie bereinigen.
 - **Hakt:** Free Plan endet am 04.11.2026 → vorher auf Paid Plan wechseln (Guthaben bleibt bis 04.05.2027).
 
 ## 2026-10-13 · Woche 0 · Arbeitsumgebung
