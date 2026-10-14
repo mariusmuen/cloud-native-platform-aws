@@ -31,5 +31,4 @@ Real errors with symptom → cause → fix. Source for the postmortem and interv
 | Date | Symptom | Cause | Fix | Lesson |
 |---|---|---|---|---|
 | 2026-10-14 | Default CLI region was `us-east-1` instead of `eu-central-1` | `aws login` falls back to a default region if none is set | `aws configure set region eu-central-1` | Always set the region explicitly; mixed regions are a major source of forgotten resources |
-| 2026-10-14 | `terraform validate`: *Reference to undeclared input variable* / *undeclared resource* | Used `var.value` instead of the data source reference; copied an output from a docs example (`aws_instance.web`) | Pointed references to my own blocks | Values only come from `var.*`, `data.*` or resources; always adapt docs examples to your own code |
 | 2026-10-14 | git commit email was the placeholder text | Copied a command with a placeholder without replacing it | `git config --global user.email` with GitHub noreply address | Check `git config --list` before the first commit |
