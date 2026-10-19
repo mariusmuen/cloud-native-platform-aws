@@ -64,10 +64,26 @@ A detailed diagram will follow in [`docs/diagrams/`](docs/diagrams/).
 ## Prerequisites
 
 - AWS account with an admin IAM identity (MFA) and AWS CLI v2 (`aws login`)
-- Terraform ≥ 1.9, kubectl, Helm, Docker, kind, GitHub CLI
+- Terraform ≥ 1.10 (S3 native state locking), kubectl, Helm, Docker, kind, GitHub CLI
 - Region: `eu-central-1`
 
 Setup and run instructions will be added with milestone M1.
+
+## Terraform Conventions
+
+**State:** one S3 bucket created by `terraform/bootstrap` (versioned, SSE-KMS, private, `prevent_destroy`). Each environment uses its own key (`envs/<env>/terraform.tfstate`) with S3 native locking.
+
+**Environments:** `envs/dev` and `envs/prod` contain identical code – they differ only in `backend.tf` (state key) and `terraform.tfvars`.
+
+**Naming:** `<project>-<environment>-<resource>`, built from `local.name_prefix` – e.g. `cnp-dev-vpc`, `cnp-prod-eks`.
+
+**Tags:** applied to every resource via provider `default_tags`:
+
+| Tag | Example | Purpose |
+|---|---|---|
+| `Project` | `cnp` | group all project resources, cost allocation |
+| `Environment` | `dev` / `prod` | cost per environment, find forgotten resources |
+| `ManagedBy` | `terraform` | signals "do not change manually" |
 
 ## Cost Control
 
