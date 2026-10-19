@@ -4,6 +4,12 @@ Three lines per session: **Done · Learned · Blocked**. Newest entries first.
 
 ---
 
+## 2026-10-19 · Week 1 · Bootstrap: Terraform state bucket
+
+- **Done:** `terraform/bootstrap` creates the state bucket `cnp-tfstate-<account-id>` with versioning, SSE-KMS (customer managed key with rotation, S3 Bucket Key), full public access block and `prevent_destroy`. Applied successfully (5 resources).
+- **Learned:** Many S3 settings are separate Terraform resources that reference the bucket. Copied docs examples must be checked line by line – the example public access block had all values set to `false`, i.e. *not* blocking anything; the example key policy referenced non-existent users. Nested blocks have their own arguments (`bucket_key_enabled` belongs to `rule`, not to `apply_server_side_encryption_by_default`). `:root` in a key policy means "delegate to IAM", not the root user. KMS CMK vs. SSE-S3 → [ADR 0002](docs/adr/0002-state-bucket-kms-encryption.md). The bootstrap state stays local (chicken-and-egg).
+- **Blocked:** –
+
 ## 2026-10-14 · Week 1 (ahead of schedule) · Terraform basics
 
 - **Done:** S3 bucket exercise covering provider, variable, data source (`aws_caller_identity`), resource and outputs; full lifecycle `init → fmt → validate → plan → apply → destroy`.
@@ -30,5 +36,6 @@ Real errors with symptom → cause → fix. Source for the postmortem and interv
 
 | Date | Symptom | Cause | Fix | Lesson |
 |---|---|---|---|---|
+| 2026-10-19 | `aws login` in WSL ended with *400 Bad Request* in the browser | Selecting the existing (stale) console session offered on the sign-in page | `aws login --remote` and choose "Sign into new session" | Temporary credentials expire by design; when re-authenticating, start a fresh session |
 | 2026-10-14 | Default CLI region was `us-east-1` instead of `eu-central-1` | `aws login` falls back to a default region if none is set | `aws configure set region eu-central-1` | Always set the region explicitly; mixed regions are a major source of forgotten resources |
 | 2026-10-14 | git commit email was the placeholder text | Copied a command with a placeholder without replacing it | `git config --global user.email` with GitHub noreply address | Check `git config --list` before the first commit |
