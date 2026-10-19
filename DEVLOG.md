@@ -4,6 +4,12 @@ Three lines per session: **Done · Learned · Blocked**. Newest entries first.
 
 ---
 
+## 2026-10-19 · Week 1 · Variables, tags, naming, prod environment
+
+- **Done:** `variables.tf` (`project`, `environment` without default, `region`), `terraform.tfvars` per environment, provider `default_tags` (`Project`, `Environment`, `ManagedBy`), `local.name_prefix` (`cnp-dev`). Created `envs/prod` mirroring dev – the two environments differ in exactly two lines (state key and `environment`), which fulfils F-03. Conventions documented in the README.
+- **Learned:** `variables.tf` declares, `terraform.tfvars` assigns, `main.tf` uses (`var.x` or `"${var.x}"` inside strings) – no imports needed. A required variable without default makes `plan` fail until it is set. Locals are for derived values, not for copying variables. Tag keys are case-sensitive. `validate` only checks syntax: `"{$var.environment}"` is a valid literal string but wrong – plans and reviews catch what the validator can't. Provider, variables and locals create nothing, so `plan` shows "No changes" until resources exist.
+- **Blocked:** –
+
 ## 2026-10-19 · Week 1 · Remote backend with state locking
 
 - **Done:** `terraform/envs/dev` split into `versions.tf`, `backend.tf`, `main.tf`; S3 backend (`key = envs/dev/terraform.tfstate`, `encrypt = true`, `use_lockfile = true`). Migrated a local test state to S3 with `terraform init -migrate-state`. Tested locking with two terminals: the second `plan` failed with *Error acquiring the state lock* while the first `apply` was waiting for confirmation (F-02 ✅). Removed the test resource afterwards.
