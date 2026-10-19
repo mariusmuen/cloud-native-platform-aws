@@ -4,6 +4,12 @@ Three lines per session: **Done · Learned · Blocked**. Newest entries first.
 
 ---
 
+## 2026-10-19 · Week 1 · Remote backend with state locking
+
+- **Done:** `terraform/envs/dev` split into `versions.tf`, `backend.tf`, `main.tf`; S3 backend (`key = envs/dev/terraform.tfstate`, `encrypt = true`, `use_lockfile = true`). Migrated a local test state to S3 with `terraform init -migrate-state`. Tested locking with two terminals: the second `plan` failed with *Error acquiring the state lock* while the first `apply` was waiting for confirmation (F-02 ✅). Removed the test resource afterwards.
+- **Learned:** Terraform merges all `.tf` files in a folder; each folder is its own root module with its own state – `apply` only sees the current directory. Backend blocks can't use variables. S3 native locking writes a `.tflock` object with a conditional write (HTTP 412 *PreconditionFailed* if it already exists) – no DynamoDB needed. Every state-touching command holds the lock only while it runs; stuck locks → `terraform force-unlock`. Bucket versioning kept every state revision (11 versions after the test).
+- **Blocked:** –
+
 ## 2026-10-19 · Week 1 · Bootstrap: Terraform state bucket
 
 - **Done:** `terraform/bootstrap` creates the state bucket `cnp-tfstate-<account-id>` with versioning, SSE-KMS (customer managed key with rotation, S3 Bucket Key), full public access block and `prevent_destroy`. Applied successfully (5 resources).
