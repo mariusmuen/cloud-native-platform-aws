@@ -4,6 +4,12 @@ Three lines per session: **Done · Learned · Blocked**. Newest entries first.
 
 ---
 
+## 2026-10-20 · Week 2 · Network design
+
+- **Done:** Network concept for the EKS VPC as [ADR 0003](docs/adr/0003-network-design.md) (proposed) and a [network diagram](docs/diagrams/network.md): non-overlapping CIDRs per environment, 3 AZs, small public and large private subnets, single NAT gateway in dev.
+- **Learned:** An Availability Zone is a separate data center, not a subnet type – each AZ gets one public and one private subnet. Nodes belong in private subnets; public subnets only host load balancers and the NAT gateway. With the VPC CNI every pod consumes a subnet IP, so private subnets must be large. Single NAT = cost saving but a single point of failure for outbound traffic.
+- **Blocked:** –
+
 ## 2026-10-19 · Week 1 · Variables, tags, naming, prod environment
 
 - **Done:** `variables.tf` (`project`, `environment` without default, `region`), `terraform.tfvars` per environment, provider `default_tags` (`Project`, `Environment`, `ManagedBy`), `local.name_prefix` (`cnp-dev`). Created `envs/prod` mirroring dev – the two environments differ in exactly two lines (state key and `environment`), which fulfils F-03. Conventions documented in the README.
