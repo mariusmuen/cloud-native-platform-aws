@@ -4,10 +4,16 @@ Three lines per session: **Done · Learned · Blocked**. Newest entries first.
 
 ---
 
+## 2026-10-20 · Week 2 · Network design
+
+- **Done:** Network concept for the EKS VPC as [ADR 0003](docs/adr/0003-network-design.md) (proposed) and a [network diagram](docs/diagrams/network.md): non-overlapping CIDRs per environment, 3 AZs, small public and large private subnets, single NAT gateway in dev.
+- **Learned:** EKS-specific sizing: with the AWS VPC CNI every pod gets an IP from the node's subnet, so private subnets need far more address space than in a classic EC2 setup (`/20` per AZ). EKS discovers subnets for load balancers via the tags `kubernetes.io/role/elb` and `kubernetes.io/role/internal-elb`. The NAT topology will be a variable (`single_nat_gateway`) so dev and prod can differ without code changes.
+- **Blocked:** –
+
 ## 2026-10-19 · Week 1 · Variables, tags, naming, prod environment
 
 - **Done:** `variables.tf` (`project`, `environment` without default, `region`), `terraform.tfvars` per environment, provider `default_tags` (`Project`, `Environment`, `ManagedBy`), `local.name_prefix` (`cnp-dev`). Created `envs/prod` mirroring dev – the two environments differ in exactly two lines (state key and `environment`), which fulfils F-03. Conventions documented in the README.
-- **Learned:** `variables.tf` declares, `terraform.tfvars` assigns, `main.tf` uses (`var.x` or `"${var.x}"` inside strings) – no imports needed. A required variable without default makes `plan` fail until it is set. Locals are for derived values, not for copying variables. Tag keys are case-sensitive. `validate` only checks syntax: `"{$var.environment}"` is a valid literal string but wrong – plans and reviews catch what the validator can't. Provider, variables and locals create nothing, so `plan` shows "No changes" until resources exist.
+- **Learned:** `variables.tf` declares, `terraform.tfvars` assigns, `main.tf` uses (`var.x` or `"${var.x}"` inside strings) – no imports needed. A required variable without default makes `plan` fail until it is set. Locals are for derived values. Provider `default_tags` replace per-resource tag blocks. `terraform validate` only checks syntax – a malformed interpolation like `"{$var.x}"` is still a valid literal string, so plans and reviews remain essential. Provider, variables and locals create nothing, so `plan` shows "No changes" until resources exist.
 - **Blocked:** –
 
 ## 2026-10-19 · Week 1 · Remote backend with state locking
@@ -19,7 +25,7 @@ Three lines per session: **Done · Learned · Blocked**. Newest entries first.
 ## 2026-10-19 · Week 1 · Bootstrap: Terraform state bucket
 
 - **Done:** `terraform/bootstrap` creates the state bucket `cnp-tfstate-<account-id>` with versioning, SSE-KMS (customer managed key with rotation, S3 Bucket Key), full public access block and `prevent_destroy`. Applied successfully (5 resources).
-- **Learned:** Many S3 settings are separate Terraform resources that reference the bucket. Copied docs examples must be checked line by line – the example public access block had all values set to `false`, i.e. *not* blocking anything; the example key policy referenced non-existent users. Nested blocks have their own arguments (`bucket_key_enabled` belongs to `rule`, not to `apply_server_side_encryption_by_default`). `:root` in a key policy means "delegate to IAM", not the root user. KMS CMK vs. SSE-S3 → [ADR 0002](docs/adr/0002-state-bucket-kms-encryption.md). The bootstrap state stays local (chicken-and-egg).
+- **Learned:** In the AWS provider, many S3 settings are separate resources that reference the bucket (versioning, encryption, public access block). Provider docs examples are not secure defaults – e.g. the public access block example sets all four flags to `false` – so every copied value needs review. Nested blocks have their own arguments (`bucket_key_enabled` belongs to `rule`). KMS CMK vs. SSE-S3 → [ADR 0002](docs/adr/0002-state-bucket-kms-encryption.md). The bootstrap state stays local (chicken-and-egg).
 - **Blocked:** –
 
 ## 2026-10-14 · Week 1 (ahead of schedule) · Terraform basics
@@ -31,7 +37,7 @@ Three lines per session: **Done · Learned · Blocked**. Newest entries first.
 ## 2026-10-14 · Week 0 · Securing AWS + repository
 
 - **Done:** Verified root MFA; IAM group `admins` + user `marius-admin` with MFA, no access keys; CLI sign-in via `aws login` (temporary credentials), region `eu-central-1`; AWS Budget with alerts at 11/27 USD (actual) and 27 USD (forecasted), credits excluded; GitHub CLI connected, repository created with folder structure and `.gitignore`; branch protection for `main` via ruleset (no deletion, no force push, pull request required); forked Online Boutique. **Week 0 complete.**
-- **Learned:** Free-plan accounts lose their credits as soon as they join AWS Organizations → no IAM Identity Center (see [ADR 0001](docs/adr/0001-aws-access-iam-user.md)). Budgets must exclude credits, otherwise they never alert. Permissions belong to groups, not individual users (like AGDLP in Active Directory). Never rewrite history on shared branches; if a secret leaks, rotate it first – cleaning the history alone is not enough.
+- **Learned:** Free-plan accounts lose their credits as soon as they join AWS Organizations → no IAM Identity Center (see [ADR 0001](docs/adr/0001-aws-access-iam-user.md)). Budgets must exclude credits, otherwise they never alert. `aws login` gives the CLI short-lived credentials from a console session – no access keys on disk. Never rewrite history on shared branches; if a secret leaks, rotate it first – cleaning the history alone is not enough.
 - **Blocked:** Free plan ends on 2026-11-04 → upgrade to paid plan before then (credits remain valid until 2027-05-04).
 
 ## 2026-10-13 · Week 0 · Workstation setup
@@ -50,4 +56,3 @@ Real errors with symptom → cause → fix. Source for the postmortem and interv
 |---|---|---|---|---|
 | 2026-10-19 | `aws login` in WSL ended with *400 Bad Request* in the browser | Selecting the existing (stale) console session offered on the sign-in page | `aws login --remote` and choose "Sign into new session" | Temporary credentials expire by design; when re-authenticating, start a fresh session |
 | 2026-10-14 | Default CLI region was `us-east-1` instead of `eu-central-1` | `aws login` falls back to a default region if none is set | `aws configure set region eu-central-1` | Always set the region explicitly; mixed regions are a major source of forgotten resources |
-| 2026-10-14 | git commit email was the placeholder text | Copied a command with a placeholder without replacing it | `git config --global user.email` with GitHub noreply address | Check `git config --list` before the first commit |
