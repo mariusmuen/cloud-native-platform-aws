@@ -4,6 +4,12 @@ Three lines per session: **Done · Learned · Blocked**. Newest entries first.
 
 ---
 
+## 2026-10-21 · Week 2 · Linting setup
+
+- **Done:** Added a repository-wide `.tflint.hcl` (Terraform `recommended` preset, AWS ruleset 0.49.0, documented variables/outputs, naming convention). First run found 4 issues; fixed the missing `required_version` and an undocumented output in `bootstrap`. Lint commands documented in the README.
+- **Learned:** `tflint --recursive` lints every root module with one shared config; plugins are pinned like providers. The remaining warnings (`local.name_prefix` declared but not used in dev/prod) are expected – they resolve once the VPC module consumes the prefix.
+- **Blocked:** –
+
 ## 2026-10-20 · Week 2 · Network design
 
 - **Done:** Network concept for the EKS VPC as [ADR 0003](docs/adr/0003-network-design.md) (proposed) and a [network diagram](docs/diagrams/network.md): non-overlapping CIDRs per environment, 3 AZs, small public and large private subnets, single NAT gateway in dev.
