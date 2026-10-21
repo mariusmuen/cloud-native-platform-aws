@@ -85,6 +85,14 @@ Setup and run instructions will be added with milestone M1.
 | `Environment` | `dev` / `prod` | cost per environment, find forgotten resources |
 | `ManagedBy` | `terraform` | signals "do not change manually" |
 
+**Linting:** [tflint](https://github.com/terraform-linters/tflint) with the recommended Terraform preset and the AWS ruleset, configured in [`.tflint.hcl`](.tflint.hcl). Run from the repository root:
+
+```bash
+terraform fmt -recursive -check terraform/
+tflint --init --config "$(pwd)/.tflint.hcl"
+tflint --recursive --config "$(pwd)/.tflint.hcl"
+```
+
 ## Cost Control
 
 The EKS cluster runs only during working sessions and is destroyed afterwards. An AWS Budget alerts on actual spend (excluding credits) and on forecasted spend. Target: total project cost < 40 €.

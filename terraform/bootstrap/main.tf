@@ -1,4 +1,6 @@
 terraform {
+  required_version = ">= 1.10"
+
   required_providers {
     aws = { source = "hashicorp/aws", version = "~> 6.0" }
   }
@@ -83,7 +85,8 @@ resource "aws_s3_bucket_public_access_block" "tfstate" {
 }
 
 output "account_id" {
-  value = data.aws_caller_identity.current.account_id
+  description = "AWS account ID the state bucket belongs to"
+  value       = data.aws_caller_identity.current.account_id
 }
 
 output "bucket_name" {
