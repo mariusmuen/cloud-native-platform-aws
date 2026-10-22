@@ -4,6 +4,12 @@ Three lines per session: **Done · Learned · Blocked**. Newest entries first.
 
 ---
 
+## 2026-10-22 · Week 2 · VPC module (part 1)
+
+- **Done:** First reusable module `terraform/modules/vpc`: VPC with DNS support/hostnames, 3 public and 3 private subnets across 3 AZs (with EKS load balancer tags), Internet Gateway, public route table and associations. Called from `envs/dev` with the CIDRs from ADR 0003. `plan`: 12 to add. NAT gateway and private routing follow next.
+- **Learned:** A module is like a function – variables in, resources, outputs out – and has no `provider` or `backend` block; it inherits the caller's provider (and region). Environment-specific inputs get no defaults so callers must set them. `count` + `count.index` create one block per list element; `length()` keeps the count in sync with the input list. `resource[*].id` returns all IDs as a list, `resource[count.index].id` exactly one – the type error *string required, but have tuple* tells you which one is needed. Module resources are addressed as `module.vpc.aws_subnet.public[0]`. `default_tags` show up in `tags_all` without a single tag line in the module.
+- **Blocked:** –
+
 ## 2026-10-21 · Week 2 · Linting setup
 
 - **Done:** Added a repository-wide `.tflint.hcl` (Terraform `recommended` preset, AWS ruleset 0.49.0, documented variables/outputs, naming convention). First run found 4 issues; fixed the missing `required_version` and an undocumented output in `bootstrap`. Lint commands documented in the README.
