@@ -22,7 +22,13 @@ AWS eu-central-1 (Terraform): VPC (public/private subnets) · EKS · ECR · IAM/
 In-cluster: Argo CD · Prometheus/Alertmanager · Grafana · Loki · Velero · External Secrets · NetworkPolicies
 ```
 
-A detailed diagram will follow in [`docs/diagrams/`](docs/diagrams/).
+### Network (dev)
+
+VPC `10.10.0.0/16` across three Availability Zones, created by the reusable [`vpc` module](terraform/modules/vpc/): public subnets for load balancers and the NAT gateway, private subnets for EKS nodes and pods. Design rationale in [ADR 0003](docs/adr/0003-network-design.md).
+
+![VPC resource map – dev](docs/diagrams/vpc-resource-map-dev.png)
+
+More diagrams in [`docs/diagrams/`](docs/diagrams/).
 
 ## Tech Stack
 
