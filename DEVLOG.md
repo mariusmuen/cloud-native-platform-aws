@@ -4,6 +4,12 @@ Three lines per session: **Done · Learned · Blocked**. Newest entries first.
 
 ---
 
+## 2026-10-23 · Week 2 · VPC module (part 2): NAT gateway and private routing
+
+- **Done:** Applied the VPC module from `main` (12 resources) and verified it in the console. Added an Elastic IP, a NAT gateway in the first public subnet and a dedicated private route table (`0.0.0.0/0 → NAT`) with explicit associations for all private subnets. Incremental `apply` added 6 resources without touching the existing 12; a follow-up `plan` showed no drift. Screenshot of the resource map added to the README; everything destroyed afterwards (18 resources).
+- **Learned:** Without an explicit association, subnets fall back to the VPC's main route table – an explicit private route table keeps routing visible in code. Route targets use different arguments (`gateway_id` for the IGW, `nat_gateway_id` for a NAT) and `validate` can't tell them apart. Terraform orders resources by references (implicit dependencies); the NAT gateway needs the IGW but doesn't reference it, so `depends_on` makes the dependency explicit – also for the reverse order on `destroy`. A running `apply` holds the state lock, so a parallel `plan` fails as expected.
+- **Blocked:** –
+
 ## 2026-10-22 · Week 2 · VPC module (part 1)
 
 - **Done:** First reusable module `terraform/modules/vpc`: VPC with DNS support/hostnames, 3 public and 3 private subnets across 3 AZs (with EKS load balancer tags), Internet Gateway, public route table and associations. Called from `envs/dev` with the CIDRs from ADR 0003. `plan`: 12 to add. NAT gateway and private routing follow next.
