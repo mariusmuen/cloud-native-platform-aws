@@ -1,3 +1,8 @@
+locals {
+  nat_count = var.single_nat_gateway ? 1 : length(var.azs)
+}
+
+
 resource "aws_vpc" "main" {
   cidr_block           = var.cidr
   enable_dns_support   = true
@@ -67,36 +72,43 @@ resource "aws_route_table_association" "public" {
 
 
 resource "aws_eip" "nat" {
+  count  = local.nat_count
   domain = "vpc"
+
+  tags = {
+    Name = "${var.name}-nat-eip-${var.azs[count.index]}"
+  }
 }
 
 
 resource "aws_nat_gateway" "nat" {
-  allocation_id = aws_eip.nat.id
-  subnet_id     = aws_subnet.public[0].id
+  count         = local.nat_count
+  allocation_id = aws_eip.nat[count.index].id
+  subnet_id     = aws_subnet.public[count.index].id
 
   tags = {
-    Name = "${var.name}-nat"
+    Name = "${var.name}-nat-${var.azs[count.index]}"
   }
 
   depends_on = [aws_internet_gateway.gw]
 }
 
 resource "aws_route_table" "private" {
+  count  = local.nat_count
   vpc_id = aws_vpc.main.id
 
   route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.nat.id
+    nat_gateway_id = aws_nat_gateway.nat[count.index].id
   }
 
   tags = {
-    Name = "${var.name}-private-rt"
+    Name = "${var.name}-private-rt-${var.azs[count.index]}"
   }
 }
 
 resource "aws_route_table_association" "private" {
   count          = length(var.azs)
   subnet_id      = aws_subnet.private[count.index].id
-  route_table_id = aws_route_table.private.id
+  route_table_id = aws_route_table.private[var.single_nat_gateway ? 0 : count.index].id
 }
