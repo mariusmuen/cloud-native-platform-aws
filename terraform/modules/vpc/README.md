@@ -28,6 +28,7 @@ The provider (region, default tags) is configured by the calling root module.
 
 | Name | Version |
 | ---- | ------- |
+| terraform | >= 1.10 |
 | aws | ~> 6.0 |
 
 ## Providers
