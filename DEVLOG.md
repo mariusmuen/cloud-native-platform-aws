@@ -4,6 +4,12 @@ Three lines per session: **Done · Learned · Blocked**. Newest entries first.
 
 ---
 
+## 2026-10-27 · Week 2 · Configurable NAT topology, prod network, module docs
+
+- **Done:** `single_nat_gateway` variable in the VPC module: one shared NAT and route table (dev, 18 resources) or one NAT and route table per AZ (prod, 24 resources). Moved all network values from `main.tf` into variables and `terraform.tfvars`, so `envs/dev` and `envs/prod` now have identical code; prod uses `10.20.0.0/16` with a NAT per AZ. Module README generated with terraform-docs. Both environments planned successfully (nothing applied).
+- **Learned:** Conditional expressions (`cond ? a : b`) work in `count` and in index positions – `aws_route_table.private[var.single_nat_gateway ? 0 : count.index]` maps every subnet to the shared table or to its own. Turning a single resource into a `count` resource changes its address (`aws_eip.nat` → `aws_eip.nat[0]`); on live infrastructure that means destroy/recreate unless a `moved` block is added. A cost-safe default is acceptable for a feature toggle, while environment-specific values stay required. Good variable descriptions pay off twice: in code review and in generated docs.
+- **Blocked:** –
+
 ## 2026-10-23 · Week 2 · VPC module (part 2): NAT gateway and private routing
 
 - **Done:** Applied the VPC module from `main` (12 resources) and verified it in the console. Added an Elastic IP, a NAT gateway in the first public subnet and a dedicated private route table (`0.0.0.0/0 → NAT`) with explicit associations for all private subnets. Incremental `apply` added 6 resources without touching the existing 12; a follow-up `plan` showed no drift. Screenshot of the resource map added to the README; everything destroyed afterwards (18 resources).
