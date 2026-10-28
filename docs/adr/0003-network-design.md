@@ -1,7 +1,7 @@
 # ADR 0003: VPC network design for EKS
 
 - **Date:** 2026-10-20
-- **Status:** Proposed
+- **Status:** Accepted (implemented in `terraform/modules/vpc`, applied and verified 2026-10-23)
 
 ## Context
 

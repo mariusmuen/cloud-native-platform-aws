@@ -4,6 +4,12 @@ Three lines per session: **Done · Learned · Blocked**. Newest entries first.
 
 ---
 
+## 2026-10-28 · Week 3 · ECR module and shared stack
+
+- **Done:** New root module `envs/shared` for long-lived resources ([ADR 0004](docs/adr/0004-shared-stack.md)). ECR module creating `cnp/frontend`, `cnp/cartservice` and `cnp/checkoutservice` with immutable tags, scan on push and a lifecycle policy (untagged images expire after 1 day, keep the last 10). Applied – the repositories stay up permanently. ADR 0003 set to accepted.
+- **Learned:** ECR is the registry; a repository holds all versions (tags) of one image; tags point to an image digest. `for_each` keys resources by name (`this["frontend"]`) instead of position, so removing one entry doesn't shift and recreate the others – `count` would. `each.key` is the current element; `toset()` turns a list into the set `for_each` needs. Lifecycle rules run by priority and can only select tagged images with tag patterns, so the second rule uses `tagStatus = any`. Environment-independent resources need their own state, otherwise a routine `destroy` in dev would wipe the registry ("build once, deploy many").
+- **Blocked:** –
+
 ## 2026-10-27 · Week 2 · Configurable NAT topology, prod network, module docs
 
 - **Done:** `single_nat_gateway` variable in the VPC module: one shared NAT and route table (dev, 18 resources) or one NAT and route table per AZ (prod, 24 resources). Moved all network values from `main.tf` into variables and `terraform.tfvars`, so `envs/dev` and `envs/prod` now have identical code; prod uses `10.20.0.0/16` with a NAT per AZ. Module README generated with terraform-docs. Both environments planned successfully (nothing applied).
