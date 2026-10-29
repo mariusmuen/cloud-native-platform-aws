@@ -1,5 +1,5 @@
 output "role_arn" {
-  description = "attribute .arn of the role"
+  description = "ARN of the IAM role for GitHub Actions (use as role-to-assume)"
   value       = aws_iam_role.github_actions.arn
 }
 

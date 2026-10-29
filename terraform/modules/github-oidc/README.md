@@ -72,5 +72,5 @@ No modules.
 
 | Name | Description |
 | ---- | ----------- |
-| role\_arn | attribute .arn of the role |
+| role\_arn | ARN of the IAM role for GitHub Actions (use as role-to-assume) |
 <!-- END_TF_DOCS -->
