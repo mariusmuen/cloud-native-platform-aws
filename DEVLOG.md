@@ -4,6 +4,12 @@ Three lines per session: **Done · Learned · Blocked**. Newest entries first.
 
 ---
 
+## 2026-10-29 · Week 3 · GitHub Actions → AWS via OIDC
+
+- **Done:** Module `github-oidc`: IAM OIDC provider for GitHub, role `cnp-github-actions` with a trust policy restricted to this repository's `main` branch, and an inline policy that may only push to the three ECR repositories. Wired into the `shared` stack by passing the ECR module's output (`values(module.ecr.repository_arns)`) into the new module; applied. Role ARN stored as GitHub repository variable `AWS_ROLE_ARN`. First workflow `aws-oidc-test.yml` runs `aws sts get-caller-identity` on pushes to `main`. Rationale in [ADR 0005](docs/adr/0005-github-oidc.md).
+- **Learned:** The trust policy answers *who* may assume a role (principal = the OIDC provider), the permission policy *what* on *which* resources. Without the `sub` condition any GitHub workflow worldwide could assume the role. `aws_iam_policy_document` is a data source that renders JSON; attaching it needs a separate `aws_iam_role_policy` resource. `count` only works on whole resources/data/modules, not nested blocks – and list arguments like `resources` don't need it. Values produced by another module are passed via `module.x.output`, not via variables; `values()` turns a map into a list. A policy document depending on a not-yet-created ARN is read during apply. GitHub only runs workflows from `.github/workflows/`, and a workflow needs `permissions: id-token: write` to obtain an OIDC token.
+- **Blocked:** –
+
 ## 2026-10-28 · Week 3 · ECR module and shared stack
 
 - **Done:** New root module `envs/shared` for long-lived resources ([ADR 0004](docs/adr/0004-shared-stack.md)). ECR module creating `cnp/frontend`, `cnp/cartservice` and `cnp/checkoutservice` with immutable tags, scan on push and a lifecycle policy (untagged images expire after 1 day, keep the last 10). Applied – the repositories stay up permanently. ADR 0003 set to accepted.
