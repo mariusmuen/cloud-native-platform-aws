@@ -23,3 +23,12 @@ module "ecr" {
   name         = local.name_prefix
   repositories = var.ecr_repositories
 }
+
+
+module "github_oidc" {
+  source = "../../modules/github-oidc"
+
+  name                = local.name_prefix
+  github_repository   = var.github_repository
+  ecr_repository_arns = values(module.ecr.repository_arns)
+}

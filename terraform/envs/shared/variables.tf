@@ -19,3 +19,8 @@ variable "ecr_repositories" {
   type        = list(string)
   description = "Services built by CI that get their own ECR repository"
 }
+
+variable "github_repository" {
+  type        = string
+  description = "GitHub repository (owner/name) whose main branch may assume the CI role"
+}
