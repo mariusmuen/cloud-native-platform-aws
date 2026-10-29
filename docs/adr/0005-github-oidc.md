@@ -20,7 +20,7 @@ Option 3, implemented in `terraform/modules/github-oidc` and deployed in the `sh
 - IAM OIDC provider for `token.actions.githubusercontent.com` with audience `sts.amazonaws.com`
 - IAM role `cnp-github-actions` whose trust policy requires
   - `aud = sts.amazonaws.com`
-  - `sub = repo:mariusmuen/cloud-native-platform-aws:ref:refs/heads/main`
+  - `sub = repo:mariusmuen@76739764/cloud-native-platform-aws@1418546144:ref:refs/heads/main` – GitHub's subject claim contains the immutable owner and repository IDs, so a deleted or renamed repository cannot be re-created by someone else to obtain the role
 - Inline policy with least privilege: `ecr:GetAuthorizationToken` (cannot be scoped) plus push actions **only** on the project's three ECR repositories
 - The role ARN is stored as a GitHub repository *variable* (not secret) – it is useless without a valid token
 

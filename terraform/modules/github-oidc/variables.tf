@@ -5,7 +5,7 @@ variable "name" {
 
 variable "github_repository" {
   type        = string
-  description = "GitHub repository (owner/name) whose main branch may assume the role"
+  description = "GitHub repository as it appears in the OIDC sub claim (owner@owner_id/repo@repo_id); its main branch may assume the role"
 }
 
 variable "ecr_repository_arns" {
