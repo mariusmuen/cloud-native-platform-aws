@@ -22,5 +22,5 @@ variable "ecr_repositories" {
 
 variable "github_repository" {
   type        = string
-  description = "GitHub repository (owner/name) whose main branch may assume the CI role"
+  description = "GitHub repository as it appears in the OIDC sub claim (owner@owner_id/repo@repo_id)"
 }

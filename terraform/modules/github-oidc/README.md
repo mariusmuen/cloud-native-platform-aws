@@ -6,6 +6,8 @@ Lets GitHub Actions authenticate to AWS without access keys ([ADR 0005](../../..
 - **IAM role** `<name>-github-actions` – trust policy accepts only tokens with audience `sts.amazonaws.com` from the `main` branch of `github_repository`
 - **Inline policy** – push to the given ECR repositories only (plus `ecr:GetAuthorizationToken`, which AWS does not allow to scope)
 
+**Note on the subject claim:** GitHub issues `sub` claims in the form `repo:<owner>@<owner_id>/<repo>@<repo_id>:ref:refs/heads/main`. Pass `github_repository` including the IDs – the plain `owner/repo` form will be rejected. The actual claim of a denied request can be found in CloudTrail (`AssumeRoleWithWebIdentity`, field `userIdentity.userName`).
+
 ## Usage
 
 ```hcl
@@ -13,7 +15,7 @@ module "github_oidc" {
   source = "../../modules/github-oidc"
 
   name                = "cnp"
-  github_repository   = "mariusmuen/cloud-native-platform-aws"
+  github_repository   = "mariusmuen@76739764/cloud-native-platform-aws@1418546144"
   ecr_repository_arns = values(module.ecr.repository_arns)
 }
 ```
@@ -65,7 +67,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 | ---- | ----------- | ---- | ------- | :------: |
 | ecr\_repository\_arns | ARNs of the ECR repositories the role may push to | `list(string)` | n/a | yes |
-| github\_repository | GitHub repository (owner/name) whose main branch may assume the role | `string` | n/a | yes |
+| github\_repository | GitHub repository as it appears in the OIDC sub claim (owner@owner\_id/repo@repo\_id); its main branch may assume the role | `string` | n/a | yes |
 | name | Prefix for resource names; the role is called <name>-github-actions | `string` | n/a | yes |
 
 ## Outputs
