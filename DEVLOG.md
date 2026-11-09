@@ -4,6 +4,12 @@ Three lines per session: **Done · Learned · Blocked**. Newest entries first.
 
 ---
 
+## 2026-11-09 · Week 4 · EKS concepts and IAM roles
+
+- **Done:** Worked through the EKS building blocks (control plane, managed node groups, add-ons, access entries). Started the `eks` module with the IAM roles: a cluster role for the EKS service (`AmazonEKSClusterPolicy`) and a node role for the EC2 workers (`AmazonEKSWorkerNodePolicy`, `AmazonEKS_CNI_Policy`, `AmazonEC2ContainerRegistryReadOnly`). Validated, nothing applied yet.
+- **Learned:** Terraform provisions the cluster; workloads inside it are deployed with Kubernetes tooling. Cluster and nodes need separate roles because they are different principals with different permissions. Permissions on the node role are potentially reachable by every pod on that node, which is why IRSA follows later. Spreading nodes across AZs is not the same as redundancy: a service only survives a node loss without interruption if it runs multiple replicas. AWS places nodes and the Kubernetes scheduler places pods, based on the requests they declare.
+- **Blocked:** –
+
 ## 2026-10-29 · Week 3 · GitHub Actions → AWS via OIDC
 
 - **Done:** Module `github-oidc`: IAM OIDC provider for GitHub, role `cnp-github-actions` with a trust policy restricted to this repository's `main` branch, and an inline policy that may only push to the three ECR repositories. Wired into the `shared` stack by passing the ECR module's output (`values(module.ecr.repository_arns)`) into the new module; applied. Role ARN stored as GitHub repository variable `AWS_ROLE_ARN`. First workflow `aws-oidc-test.yml` runs `aws sts get-caller-identity` on pushes to `main`. Rationale in [ADR 0005](docs/adr/0005-github-oidc.md).
