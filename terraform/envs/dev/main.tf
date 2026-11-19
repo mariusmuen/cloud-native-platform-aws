@@ -24,3 +24,12 @@ module "vpc" {
   private_subnets    = var.private_subnets
   single_nat_gateway = var.single_nat_gateway
 }
+
+module "eks" {
+  source = "../../modules/eks"
+
+  name               = local.name_prefix
+  kubernetes_version = var.kubernetes_version
+  subnet_ids         = module.vpc.private_subnet_ids
+}
+

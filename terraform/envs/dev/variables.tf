@@ -39,3 +39,8 @@ variable "single_nat_gateway" {
   type        = bool
   description = "Use one shared NAT gateway instead of one per AZ"
 }
+
+variable "kubernetes_version" {
+  type        = string
+  description = "Kubernetes version of the EKS cluster"
+}
