@@ -4,6 +4,12 @@ Three lines per session: **Done · Learned · Blocked**. Newest entries first.
 
 ---
 
+## 2026-11-19 · Week 4 · First EKS cluster
+
+- **Done:** Completed the `eks` module: cluster (Kubernetes 1.37, API authentication mode with admin access for the creator), managed node group (2 × `t3.medium` Spot in the private subnets) and the add-ons `vpc-cni`, `coredns`, `kube-proxy`. Wired into `envs/dev` with `subnet_ids = module.vpc.private_subnet_ids`. First apply: 29 resources, cluster and nodes `ACTIVE` after ~20 minutes. Connected with `aws eks update-kubeconfig`, checked nodes and system pods, ran an nginx deployment with 3 replicas and a pod-deletion test, then destroyed everything. Decision for an own module: [ADR 0006](docs/adr/0006-own-eks-module.md).
+- **Learned:** Values created by another module are passed via outputs – a data source would fail on a fresh build because the subnets don't exist yet at plan time, and hard-coded IDs change after every destroy. `depends_on` covers ordering that isn't visible through references (add-ons run as pods and need nodes). The control plane lives in an AWS-managed account across multiple AZs; if it is down, running workloads keep serving (data plane vs. control plane). EKS versions in extended support cost several times more, so regular upgrades are part of operations. Both Spot nodes landed in the same AZ (`eu-central-1b`): Spot placement follows available capacity, so AZ spread is not guaranteed – prod needs On-Demand, one node group per AZ or topology spread constraints. With the VPC CNI every pod gets a real IP from the node's subnet; a replaced pod gets a new one, which is why clients use Services.
+- **Blocked:** `envs/prod` does not call the EKS module yet, so dev and prod code differ for now – to be aligned next session (with `capacity_type` as a variable: Spot in dev, On-Demand in prod).
+
 ## 2026-11-09 · Week 4 · EKS concepts and IAM roles
 
 - **Done:** Worked through the EKS building blocks (control plane, managed node groups, add-ons, access entries). Started the `eks` module with the IAM roles: a cluster role for the EKS service (`AmazonEKSClusterPolicy`) and a node role for the EC2 workers (`AmazonEKSWorkerNodePolicy`, `AmazonEKS_CNI_Policy`, `AmazonEC2ContainerRegistryReadOnly`). Validated, nothing applied yet.
